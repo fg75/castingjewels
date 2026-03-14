@@ -1,0 +1,128 @@
+import React, { useState } from 'react';
+import { ChevronDown, Filter, X, LayoutGrid, List } from 'lucide-react';
+
+const RingsPage = () => {
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+
+  // Mock data per i filtri
+  const categories = ["Engagement", "Eternity Bands", "Anniversary", "Wedding Bands", "Signet Rings", "Cocktail"];
+  const shapes = ["Round", "Oval", "Emerald", "Pear", "Cushion", "Princess"];
+  const sizes = ["0.50ct", "0.75ct", "1.00ct", "1.50ct", "2.00ct+"];
+
+  return (
+    <div className="bg-white min-h-screen pt-24 pb-12">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-8">
+        
+        {/* HEADER PAGINA */}
+        <div className="mb-12">
+          <h1 className="text-[10px] font-bold text-[#d4af37] uppercase tracking-[0.5em] mb-4">Master Collection</h1>
+          <p className="text-4xl font-light uppercase tracking-widest text-[#1a1a1a]">Rings <span className="italic font-normal">& Designs</span></p>
+        </div>
+
+        {/* --- TOP FILTER BAR (Simile allo snapshot) --- */}
+        <div className="hidden md:grid grid-cols-4 gap-4 p-6 bg-[#fcfcfc] border border-gray-100 mb-8">
+          {[
+            { label: "Primary Stone Shape", options: shapes },
+            { label: "Primary Stone Size", options: sizes },
+            { label: "Head Style", options: ["Peg Head", "Integrated", "Halo"] },
+            { label: "Shank Style", options: ["Straight", "Tapered", "Split", "Bypass"] }
+          ].map((filter, i) => (
+            <div key={i} className="flex flex-col gap-2">
+              <label className="text-[9px] font-bold uppercase tracking-widest text-gray-400">{filter.label}</label>
+              <div className="relative">
+                <select className="w-full bg-white border border-gray-200 p-3 text-[11px] uppercase tracking-wider appearance-none focus:outline-none focus:border-[#d4af37] cursor-pointer">
+                  <option>Select Option</option>
+                  {filter.options.map(opt => <option key={opt}>{opt}</option>)}
+                </select>
+                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* MOBILE FILTER TOGGLE */}
+        <button 
+          onClick={() => setIsMobileFiltersOpen(true)}
+          className="md:hidden w-full mb-6 p-4 border border-[#1a1a1a] flex items-center justify-center gap-3 text-[10px] font-bold uppercase tracking-widest"
+        >
+          <Filter size={16} /> Filter Collection
+        </button>
+
+        <div className="flex flex-col md:flex-row gap-12">
+          
+          {/* --- SIDEBAR FILTERS --- */}
+          <aside className="hidden md:block w-64 flex-shrink-0 space-y-10">
+            <div>
+              <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] mb-6 pb-2 border-b border-[#1a1a1a]">Category</h3>
+              <div className="space-y-3">
+                {categories.map(cat => (
+                  <label key={cat} className="flex items-center gap-3 group cursor-pointer">
+                    <div className="w-4 h-4 border border-gray-300 flex items-center justify-center group-hover:border-[#d4af37] transition-colors">
+                      <div className="w-2 h-2 bg-[#d4af37] scale-0 group-hover:scale-100 transition-transform" />
+                    </div>
+                    <span className="text-[11px] uppercase tracking-wider text-gray-500 group-hover:text-[#1a1a1a]">{cat}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] mb-6 pb-2 border-b border-[#1a1a1a]">Metal State</h3>
+              <div className="space-y-3">
+                {["Polished", "Raw Casting", "Pre-set"].map(state => (
+                  <label key={state} className="flex items-center gap-3 group cursor-pointer">
+                    <input type="checkbox" className="hidden" />
+                    <div className="w-4 h-4 border border-gray-300 flex items-center justify-center">
+                       <div className="w-2 h-2 bg-[#1a1a1a] opacity-0 peer-checked:opacity-100" />
+                    </div>
+                    <span className="text-[11px] uppercase tracking-wider text-gray-500">{state}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </aside>
+
+          {/* --- PRODUCT GRID --- */}
+          <div className="flex-1">
+            <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100">
+              <span className="text-[10px] text-gray-400 uppercase tracking-widest">Showing 24 of 189 models</span>
+              <div className="flex items-center gap-4">
+                 <select className="text-[10px] uppercase font-bold tracking-widest border-none focus:ring-0">
+                   <option>Sort by: Newest</option>
+                   <option>Price: Low to High</option>
+                 </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
+              {/* Qui andranno le tue card prodotto migliorate */}
+              {[1,2,3,4,5,6,7,8].map(i => (
+                <div key={i} className="group cursor-pointer">
+                  <div className="relative aspect-square bg-[#f9f9f9] mb-4 overflow-hidden">
+                    <img 
+                      src={`https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=400`} 
+                      className="w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <span className="bg-white text-[8px] font-bold px-2 py-1 uppercase tracking-tighter shadow-sm">New Entry</span>
+                    </div>
+                  </div>
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest mb-1">Solitaire Mounting #504{i}</h4>
+                  <p className="text-[9px] text-gray-400 uppercase mb-3">Available in 18k / PT / 925</p>
+                  <span className="text-sm font-light">€45.00</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RingsPage;
+
+
+
+
+export default RingsPage;
