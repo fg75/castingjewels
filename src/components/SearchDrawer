@@ -1,0 +1,69 @@
+"use client";
+import React, { useState } from 'react';
+import { X, ChevronLeft } from 'lucide-react';
+import { BraceletsFilter } from './BraceletsFilter';
+// Importa gli altri filtri (RingsFilter, EarringsFilter, ecc.)
+
+export const SearchDrawer = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex justify-end">
+      {/* Overlay scuro */}
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      
+      {/* Drawer */}
+      <div className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+        
+        {/* Header del Drawer */}
+        <div className="p-6 border-b flex justify-between items-center bg-[#0a0a0a] text-white">
+          {selectedCategory ? (
+            <button onClick={() => setSelectedCategory(null)} className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold">
+              <ChevronLeft size={16} /> Back
+            </button>
+          ) : (
+            <span className="text-[10px] uppercase tracking-[0.3em] font-black text-[#d4af37]">Advanced Search</span>
+          )}
+          <button onClick={onClose}><X size={20} /></button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-6">
+          {!selectedCategory ? (
+            /* Step 1: Selezione Categoria */
+            <div className="space-y-4">
+              <p className="text-[11px] uppercase tracking-widest text-gray-400 mb-8 font-bold text-center">Select category to unlock specific filters</p>
+              {['Rings', 'Bracelets', 'Earrings', 'Pendants'].map((cat) => (
+                <button 
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat.toLowerCase())}
+                  className="w-full p-8 border border-gray-100 hover:border-[#d4af37] text-left transition-all group flex justify-between items-center"
+                >
+                  <span className="text-sm uppercase tracking-[0.2em] font-light group-hover:font-bold">{cat}</span>
+                  <div className="w-8 h-[1px] bg-gray-200 group-hover:w-12 group-hover:bg-[#d4af37] transition-all" />
+                </button>
+              ))}
+            </div>
+          ) : (
+            /* Step 2: Caricamento Filtro Specifico */
+            <div className="animate-in fade-in duration-500">
+              <h2 className="text-xl font-light uppercase tracking-widest mb-8 text-center italic">
+                {selectedCategory} <span className="text-[#d4af37] not-italic font-black">Filters</span>
+              </h2>
+              
+              {selectedCategory === 'bracelets' && <BraceletsFilter onFilterChange={(f) => console.log(f)} />}
+              {/* Qui aggiungeremo gli altri: 
+                 selectedCategory === 'rings' && <RingsFilter ... /> 
+              */}
+              
+              <button className="w-full bg-black text-white p-5 mt-10 text-[11px] font-black uppercase tracking-[0.3em] hover:bg-[#d4af37] hover:text-black transition-all">
+                View Results
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};

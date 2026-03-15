@@ -1,15 +1,18 @@
-"use client";
+'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation'; // Importato per gestire lo stato attivo
 import { ShoppingBag, User, Menu, X } from 'lucide-react';
 
 export const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const navLinks = [
     { name: 'Rings', href: '/rings' },
     { name: 'Earrings', href: '/earrings' },
     { name: 'Pendants', href: '/pendants' },
+    { name: 'Bracelets', href: '/bracelets' }, // Link aggiunto correttamente
   ];
 
   return (
@@ -23,22 +26,27 @@ export const Navbar = () => {
         
         {/* DESKTOP MENU */}
         <div className="hidden lg:flex gap-10">
-          {navLinks.map((link) => (
-            <Link 
-              key={link.name} 
-              href={link.href} 
-              className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-900 hover:text-[#d4af37] transition-colors"
-            >
-              {link.name}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link 
+                key={link.name} 
+                href={link.href} 
+                className={`text-[10px] font-black uppercase tracking-[0.2em] transition-colors ${
+                  isActive ? 'text-[#d4af37]' : 'text-gray-900 hover:text-[#d4af37]'
+                }`}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
         </div>
 
         {/* ACTIONS & MOBILE TOGGLE */}
         <div className="flex items-center gap-4 md:gap-6 text-gray-900">
           <div className="hidden md:flex items-center gap-5">
-            <User size={18} className="cursor-pointer hover:text-[#d4af37]" />
-            <ShoppingBag size={18} className="cursor-pointer hover:text-[#d4af37]" />
+            <User size={18} className="cursor-pointer hover:text-[#d4af37] transition-colors" />
+            <ShoppingBag size={18} className="cursor-pointer hover:text-[#d4af37] transition-colors" />
           </div>
           
           {/* Tasto Hamburger Mobile */}
@@ -62,7 +70,9 @@ export const Navbar = () => {
               key={link.name} 
               href={link.href} 
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-xl font-light uppercase tracking-[0.3em] border-b border-gray-50 pb-4"
+              className={`text-xl font-light uppercase tracking-[0.3em] border-b border-gray-50 pb-4 ${
+                pathname === link.href ? 'text-[#d4af37] border-[#d4af37]' : 'text-gray-900'
+              }`}
             >
               {link.name}
             </Link>
