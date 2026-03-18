@@ -12,9 +12,11 @@ export const Hero = () => {
           className="w-full h-full object-cover" 
           alt="Jewelry Background" 
         />
+        {/* Sfumatura verso il nero per raccordarsi con la sezione successiva */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0a0a]" />
       </div>
 
-      {/* TEXT CONTENT: Posizionato in alto con margine dedicato */}
+      {/* TEXT CONTENT: Titoli principali */}
       <div className="relative z-10 text-center px-4 max-w-5xl mb-20">
         <h2 className="text-[#d4af37] text-[12px] md:text-[13px] font-black uppercase tracking-[0.4em] mb-4 animate-in fade-in slide-in-from-top-4 duration-700">
           Professional 3D Jewelry design
@@ -29,31 +31,45 @@ export const Hero = () => {
         </p>
       </div>
 
-      {/* BOXES: Spinti verso il basso con mt-auto */}
+      {/* BOXES & TECHNICAL PROMISE: Insieme verso il basso */}
       <div className="relative z-10 w-full max-w-4xl px-4 mt-auto">
-        <div className="flex flex-row gap-2 md:gap-4 justify-center items-stretch w-full overflow-hidden">
+        {/* I 3 BOX */}
+        <div className="flex flex-row gap-2 md:gap-4 justify-center items-stretch w-full overflow-hidden mb-12">
           
           {/* Box 1 */}
-          <div className="flex-1 bg-white/5 backdrop-blur-md border border-white/10 p-2 md:p-6 flex flex-col items-center group hover:border-[#d4af37] transition-all min-h-[110px] md:min-h-[160px] justify-center">
+          <div className="flex-1 bg-white/5 backdrop-blur-md border border-white/10 p-2 md:p-6 flex flex-col items-center group hover:border-[#d4af37] transition-all min-h-[110px] md:min-h-[160px] justify-center text-center">
             <Download className="text-[#d4af37] mb-2 group-hover:scale-110 transition-transform" size={20} />
-            <span className="text-[8px] md:text-[11px] font-black uppercase tracking-tighter md:tracking-widest text-white text-center leading-none">Instant Download</span>
-            <span className="hidden sm:block text-[9px] text-gray-500 mt-3 uppercase tracking-tighter leading-tight text-center px-1">Access files immediately</span>
+            <span className="text-[8px] md:text-[11px] font-black uppercase tracking-tighter md:tracking-widest text-white leading-none">Instant Download</span>
+            <span className="hidden sm:block text-[9px] text-gray-500 mt-3 uppercase tracking-tighter leading-tight px-1">Access files immediately</span>
           </div>
           
           {/* Box 2 */}
-          <div className="flex-1 bg-white/5 backdrop-blur-md border border-white/10 p-2 md:p-6 flex flex-col items-center group hover:border-[#d4af37] transition-all min-h-[110px] md:min-h-[160px] justify-center">
+          <div className="flex-1 bg-white/5 backdrop-blur-md border border-white/10 p-2 md:p-6 flex flex-col items-center group hover:border-[#d4af37] transition-all min-h-[110px] md:min-h-[160px] justify-center text-center">
             <Printer className="text-[#d4af37] mb-2 group-hover:scale-110 transition-transform" size={20} />
-            <span className="text-[8px] md:text-[11px] font-black uppercase tracking-tighter md:tracking-widest text-white text-center leading-none">Ready to Print</span>
-            <span className="hidden sm:block text-[9px] text-gray-500 mt-3 uppercase tracking-tighter leading-tight text-center px-1">Optimized for LCD/DLP</span>
+            <span className="text-[8px] md:text-[11px] font-black uppercase tracking-tighter md:tracking-widest text-white leading-none">Ready to Print</span>
+            <span className="hidden sm:block text-[9px] text-gray-500 mt-3 uppercase tracking-tighter leading-tight px-1">Optimized for LCD/DLP</span>
           </div>
           
           {/* Box 3 */}
-          <div className="flex-1 bg-white/5 backdrop-blur-md border border-white/10 p-2 md:p-6 flex flex-col items-center group hover:border-[#d4af37] transition-all min-h-[110px] md:min-h-[160px] justify-center">
+          <div className="flex-1 bg-white/5 backdrop-blur-md border border-white/10 p-2 md:p-6 flex flex-col items-center group hover:border-[#d4af37] transition-all min-h-[110px] md:min-h-[160px] justify-center text-center">
             <Flame className="text-[#d4af37] mb-2 group-hover:scale-110 transition-transform" size={20} />
-            <span className="text-[8px] md:text-[11px] font-black uppercase tracking-tighter md:tracking-widest text-white text-center leading-none">Ready to Cast</span>
-            <span className="hidden sm:block text-[9px] text-gray-500 mt-3 uppercase tracking-tighter leading-tight text-center px-1">Tested Parameters</span>
+            <span className="text-[8px] md:text-[11px] font-black uppercase tracking-tighter md:tracking-widest text-white leading-none">Ready to Cast</span>
+            <span className="hidden sm:block text-[9px] text-gray-500 mt-3 uppercase tracking-tighter leading-tight px-1">Tested Parameters</span>
           </div>
+        </div>
 
+        {/* NUOVA SEZIONE INTEGRATA SOTTO I BOX */}
+        <div className="text-center pb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
+          <p className="text-white text-[11px] md:text-[14px] font-light uppercase tracking-[0.4em] mb-2">
+            Precision Search for <span className="italic font-serif">Modern Masters</span>
+          </p>
+          <div className="flex items-center justify-center gap-4">
+            <div className="h-[1px] w-8 bg-[#d4af37]/30" />
+            <p className="text-[#d4af37] text-[9px] md:text-[11px] font-bold uppercase tracking-[0.3em]">
+              Filtered by stone shape, carat count, and technical dimensions
+            </p>
+            <div className="h-[1px] w-8 bg-[#d4af37]/30" />
+          </div>
         </div>
       </div>
     </header>

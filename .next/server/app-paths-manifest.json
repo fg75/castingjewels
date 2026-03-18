@@ -1,7 +1,6 @@
 {
-  "/page": "app/page.js",
-  "/pendants/page": "app/pendants/page.js",
-  "/bracelets/page": "app/bracelets/page.js",
+  "/(public)/page": "app/(public)/page.js",
+  "/admin/productentry/page": "app/admin/productentry/page.js",
   "/rings/page": "app/rings/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js"
 }

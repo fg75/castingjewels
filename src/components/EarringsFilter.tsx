@@ -1,13 +1,12 @@
 "use client";
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Diamond, Layers, Hammer, Settings2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Diamond, Layers, Hammer, Settings2, Sparkles } from 'lucide-react';
 
 interface EarringsFilterProps {
   onFilterChange: (filters: any) => void;
 }
 
 export const EarringsFilter = ({ onFilterChange }: EarringsFilterProps) => {
-  // Stati per la gestione delle sezioni e della UI
   const [openSection, setOpenSection] = useState<string | null>('style');
   const [selectedStyle, setSelectedStyle] = useState(""); 
   const [primaryShape, setPrimaryShape] = useState("");
@@ -36,7 +35,7 @@ export const EarringsFilter = ({ onFilterChange }: EarringsFilterProps) => {
   return (
     <div className="flex flex-col gap-1 pb-20">
       
-      {/* 1. SECTION: DESIGN & STYLE (Incluso Diametro) */}
+      {/* 1. SECTION: DESIGN & STYLE */}
       <div className="border-b border-gray-100">
         <button 
           onClick={() => toggleSection('style')} 
@@ -61,14 +60,10 @@ export const EarringsFilter = ({ onFilterChange }: EarringsFilterProps) => {
                 className="w-full border border-gray-200 p-3 text-[11px] uppercase outline-none focus:border-[#d4af37] bg-white cursor-pointer"
               >
                 <option value="">All Styles</option>
-                {[
-                  "Solitaire", "Studs", "Hoops", "Huggies", "Pavé", "Drop", 
-                  "Halo", "Chandelier", "Ear Cuffs", "Ear Jackets", "Ear Climbers / Crawlers"
-                ].map(s => <option key={s} value={s}>{s}</option>)}
+                {["Solitaire", "Studs", "Hoops", "Huggies", "Pavé", "Drop", "Halo", "Chandelier", "Ear Cuffs", "Ear Jackets", "Ear Climbers / Crawlers"].map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
 
-            {/* Nuovo campo Diametro: appare solo per Hoops e Huggies */}
             {(selectedStyle === 'Hoops' || selectedStyle === 'Huggies') && (
               <div className="space-y-2 animate-in zoom-in duration-200">
                 <Label>Hoop Diameter (mm)</Label>
@@ -80,22 +75,46 @@ export const EarringsFilter = ({ onFilterChange }: EarringsFilterProps) => {
                 />
               </div>
             )}
+          </div>
+        )}
+      </div>
 
-            <div className="space-y-2">
-              <Label>Closure</Label>
-              <select 
-                onChange={(e) => onFilterChange({ closure: e.target.value })}
-                className="w-full border border-gray-200 p-3 text-[11px] uppercase outline-none focus:border-[#d4af37] bg-white cursor-pointer"
-              >
-                <option value="">All Closures</option>
-                {["Pin", "Hinge", "Omega", "Fishhook", "Leverback"].map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
+      {/* 2. SECTION: TOTAL CARATS (RANGE) */}
+      <div className="border-b border-gray-100">
+        <button 
+          onClick={() => toggleSection('carats')} 
+          className="w-full flex justify-between items-center py-5 text-[10px] font-black uppercase tracking-widest text-gray-900"
+        >
+          <span className="flex items-center gap-2">
+            <Sparkles size={14} className={openSection === 'carats' ? "text-[#d4af37]" : "text-gray-400"}/> 
+            Total Carat Weight (Pair)
+          </span>
+          {openSection === 'carats' ? <ChevronUp size={14} className="text-[#d4af37]"/> : <ChevronDown size={14}/>}
+        </button>
+        
+        {openSection === 'carats' && (
+          <div className="pb-6 grid grid-cols-2 gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="space-y-1">
+              <Label>Min CT</Label>
+              <input 
+                type="number" step="0.01" placeholder="0.00" 
+                className="w-full border border-gray-200 p-3 text-[11px] outline-none focus:border-[#d4af37]" 
+                onChange={(e) => onFilterChange({ min_ct: handleNumberInput(e.target.value) })}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>Max CT</Label>
+              <input 
+                type="number" step="0.01" placeholder="10.00" 
+                className="w-full border border-gray-200 p-3 text-[11px] outline-none focus:border-[#d4af37]" 
+                onChange={(e) => onFilterChange({ max_ct: handleNumberInput(e.target.value) })}
+              />
             </div>
           </div>
         )}
       </div>
 
-      {/* 2. SECTION: PRIMARY STONE */}
+      {/* 3. SECTION: PRIMARY STONE */}
       <div className="border-b border-gray-100">
         <button 
           onClick={() => toggleSection('primary')} 
@@ -110,6 +129,27 @@ export const EarringsFilter = ({ onFilterChange }: EarringsFilterProps) => {
         
         {openSection === 'primary' && (
           <div className="pb-6 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+            {/* CARAT RANGE - INIZIO RIGA */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label>Min CT (Primary)</Label>
+                <input 
+                  type="number" step="0.01" placeholder="0.00" 
+                  className="w-full border border-gray-200 p-3 text-[11px] outline-none focus:border-[#d4af37]" 
+                  onChange={(e) => onFilterChange({ primary_min_ct: handleNumberInput(e.target.value) })}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label>Max CT (Primary)</Label>
+                <input 
+                  type="number" step="0.01" placeholder="0.00" 
+                  className="w-full border border-gray-200 p-3 text-[11px] outline-none focus:border-[#d4af37]" 
+                  onChange={(e) => onFilterChange({ primary_max_ct: handleNumberInput(e.target.value) })}
+                />
+              </div>
+            </div>
+
+            {/* SHAPE & COUNT */}
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
                 <Label>Shape</Label>
@@ -133,6 +173,8 @@ export const EarringsFilter = ({ onFilterChange }: EarringsFilterProps) => {
                 />
               </div>
             </div>
+
+            {/* DIMENSIONS */}
             <div className="space-y-2">
               <Label>{primaryShape === "Round" ? "Diameter (mm)" : "Dimensions (mm)"}</Label>
               <div className="flex gap-2">
@@ -141,7 +183,7 @@ export const EarringsFilter = ({ onFilterChange }: EarringsFilterProps) => {
                   className="w-full border border-gray-200 p-3 text-[11px] outline-none focus:border-[#d4af37]" 
                   onChange={(e) => onFilterChange({ primary_stone_length: handleNumberInput(e.target.value) })}
                 />
-                {primaryShape !== "Round" && primaryShape !== "" && (
+                {(primaryShape !== "Round" && primaryShape !== "") && (
                   <input 
                     type="number" step="0.1" placeholder="W" 
                     className="w-full border border-gray-200 p-3 text-[11px] outline-none focus:border-[#d4af37]" 
@@ -154,7 +196,7 @@ export const EarringsFilter = ({ onFilterChange }: EarringsFilterProps) => {
         )}
       </div>
 
-      {/* 3. SECTION: SECONDARY STONES */}
+      {/* 4. SECTION: SECONDARY STONES */}
       <div className="border-b border-gray-100">
         <button 
           onClick={() => toggleSection('secondary')} 
@@ -169,6 +211,27 @@ export const EarringsFilter = ({ onFilterChange }: EarringsFilterProps) => {
         
         {openSection === 'secondary' && (
           <div className="pb-6 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+            {/* CARAT RANGE - INIZIO RIGA */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label>Min CT (Secondary)</Label>
+                <input 
+                  type="number" step="0.01" placeholder="0.00" 
+                  className="w-full border border-gray-200 p-3 text-[11px] outline-none focus:border-[#d4af37]" 
+                  onChange={(e) => onFilterChange({ secondary_min_ct: handleNumberInput(e.target.value) })}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label>Max CT (Secondary)</Label>
+                <input 
+                  type="number" step="0.01" placeholder="0.00" 
+                  className="w-full border border-gray-200 p-3 text-[11px] outline-none focus:border-[#d4af37]" 
+                  onChange={(e) => onFilterChange({ secondary_max_ct: handleNumberInput(e.target.value) })}
+                />
+              </div>
+            </div>
+
+            {/* SHAPE & COUNT */}
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
                 <Label>Shape</Label>
@@ -192,11 +255,30 @@ export const EarringsFilter = ({ onFilterChange }: EarringsFilterProps) => {
                 />
               </div>
             </div>
+
+            {/* DIMENSIONS */}
+            <div className="space-y-2">
+              <Label>{secondaryShape === "Round" ? "Side Stone Diameter (mm)" : "Side Stone Dimensions (mm)"}</Label>
+              <div className="flex gap-2">
+                <input 
+                  type="number" step="0.1" placeholder="L" 
+                  className="w-full border border-gray-200 p-3 text-[11px] outline-none focus:border-[#d4af37]" 
+                  onChange={(e) => onFilterChange({ secondary_stone_length: handleNumberInput(e.target.value) })}
+                />
+                {(secondaryShape !== "Round" && secondaryShape !== "" && secondaryShape !== "None") && (
+                  <input 
+                    type="number" step="0.1" placeholder="W" 
+                    className="w-full border border-gray-200 p-3 text-[11px] outline-none focus:border-[#d4af37]" 
+                    onChange={(e) => onFilterChange({ secondary_stone_width: handleNumberInput(e.target.value) })}
+                  />
+                )}
+              </div>
+            </div>
           </div>
         )}
       </div>
 
-      {/* 4. SECTION: METAL WEIGHT */}
+      {/* 5. SECTION: METAL WEIGHT */}
       <div className="border-b border-gray-100">
         <button 
           onClick={() => toggleSection('weight')} 

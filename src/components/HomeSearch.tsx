@@ -1,152 +1,176 @@
 "use client";
-import React, { useState } from 'react';
-import { Search, ChevronRight, SlidersHorizontal, X, ChevronLeft, Diamond, Disc, CircleDot, Anchor } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronRight, X, ChevronLeft, RotateCcw } from 'lucide-react';
 import { RingsFilter } from './RingsFilter';
 import { BraceletsFilter } from './BraceletsFilter';
 import { EarringsFilter } from './EarringsFilter';
 import { PendantsFilter } from './PendantsFilter';
 
-export const HomeSearch = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+interface HomeSearchProps {
+  isDrawerOpen: boolean;
+  onClose: () => void;
+  initialCategory: string | null;
+  onFilterChange: (filters: any) => void;
+}
 
+export const HomeSearch: React.FC<HomeSearchProps> = ({ 
+  isDrawerOpen, 
+  onClose, 
+  initialCategory,
+  onFilterChange 
+}) => {
   return (
-    <section className="relative bg-[#0a0a0a] pt-24 pb-32 overflow-hidden border-t border-white/5">
-      {/* Glow d'atmosfera */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[300px] bg-[#d4af37]/5 blur-[120px] pointer-events-none" />
-
-      <div className="max-w-5xl mx-auto px-6 relative z-10">
-        
-        {/* 1. INTESTAZIONE PRINCIPALE */}
-        <div className="text-center mb-12">
-          <h3 className="text-white text-2xl md:text-4xl font-light uppercase tracking-[0.3em] leading-tight mb-6">
-            PRECISION SEARCH FOR <span className="italic font-serif text-[#d4af37]">MODERN MASTERS</span>
-          </h3>
-          
-          {/* SCRITTA SPOSTATA IN ALTO E RESA ORO */}
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-[#d4af37] text-[10px] md:text-[12px] font-bold uppercase tracking-[0.4em] leading-relaxed max-w-2xl">
-              Filtered by stone shape, carat count, and technical dimensions
-            </p>
-            <p className="text-gray-500 text-[9px] md:text-[10px] uppercase tracking-[0.3em] opacity-80">
-              Engineered for high-end manufacturing
-            </p>
-          </div>
-        </div>
-
-        {/* 2. PANNELLO DI RICERCA */}
-        <div className="relative max-w-3xl mx-auto mb-20">
-          <div className="absolute -inset-[1px] bg-[#d4af37]/30 blur-[2px]" />
-          <div className="relative flex flex-col md:flex-row bg-black border border-white/10 p-2 gap-2">
-            <div className="relative flex-grow">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
-              <input 
-                type="text"
-                placeholder="SEARCH BY MODEL ID, STYLE OR METAL..."
-                className="w-full h-16 bg-transparent pl-16 pr-6 text-[11px] uppercase tracking-[0.25em] text-white outline-none placeholder:text-gray-700"
-              />
-            </div>
-            <button 
-              onClick={() => setIsDrawerOpen(true)}
-              className="h-16 px-12 bg-[#d4af37] text-black text-[11px] font-black uppercase tracking-[0.2em] hover:bg-white transition-all flex items-center justify-center gap-3 shadow-lg shadow-[#d4af37]/10"
-            >
-              ADVANCED FILTERS <SlidersHorizontal size={18} />
-            </button>
-          </div>
-        </div>
-
-        {/* 3. NAVIGAZIONE CATEGORIE (ICONE MINIMALI) */}
-        <div className="flex flex-wrap justify-center items-center gap-x-16 gap-y-10 border-t border-white/5 pt-16">
-          <CategoryItem 
-            icon={<Diamond size={22} />} 
-            label="Rings" 
-            onClick={() => { setIsDrawerOpen(true); setActiveCategory('rings'); }} 
-          />
-          <CategoryItem 
-            icon={<CircleDot size={22} />} 
-            label="Bracelets" 
-            onClick={() => { setIsDrawerOpen(true); setActiveCategory('bracelets'); }} 
-          />
-          <CategoryItem 
-            icon={<Disc size={22} />} 
-            label="Earrings" 
-            onClick={() => { setIsDrawerOpen(true); setActiveCategory('earrings'); }} 
-          />
-          <CategoryItem 
-            icon={<Anchor size={22} />} 
-            label="Pendants" 
-            onClick={() => { setIsDrawerOpen(true); setActiveCategory('pendants'); }} 
-          />
-        </div>
-      </div>
-
-      <SearchDrawer 
-        isOpen={isDrawerOpen} 
-        onClose={() => { setIsDrawerOpen(false); setActiveCategory(null); }} 
-        initialCategory={activeCategory}
-      />
-    </section>
+    <SearchDrawer 
+      isOpen={isDrawerOpen} 
+      onClose={onClose} 
+      initialCategory={initialCategory}
+      onFilterChange={onFilterChange}
+    />
   );
 };
 
-// Sotto-componente Icone
-const CategoryItem = ({ icon, label, onClick }: { icon: React.ReactNode, label: string, onClick: () => void }) => (
-  <button onClick={onClick} className="group flex flex-col items-center gap-4">
-    <div className="text-gray-600 group-hover:text-[#d4af37] group-hover:scale-125 transition-all duration-500 ease-out">
-      {icon}
-    </div>
-    <div className="flex flex-col items-center gap-1">
-      <span className="text-[10px] font-black uppercase tracking-[0.5em] text-gray-500 group-hover:text-white transition-colors">
-        {label}
-      </span>
-      <div className="h-[1.5px] w-0 bg-[#d4af37] group-hover:w-full transition-all duration-500" />
-    </div>
-  </button>
-);
-
-// Drawer (Logica mantenuta)
-const SearchDrawer = ({ isOpen, onClose, initialCategory }: { isOpen: boolean, onClose: () => void, initialCategory: string | null }) => {
+const SearchDrawer = ({ 
+  isOpen, 
+  onClose, 
+  initialCategory,
+  onFilterChange 
+}: { 
+  isOpen: boolean, 
+  onClose: () => void, 
+  initialCategory: string | null,
+  onFilterChange: (filters: any) => void
+}) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(initialCategory);
 
-  React.useEffect(() => {
-    if (initialCategory) setSelectedCategory(initialCategory);
-  }, [initialCategory]);
+  // Sincronizza la categoria quando il drawer viene aperto dall'esterno (es. cliccando su "Rings" in Hero)
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedCategory(initialCategory);
+    }
+  }, [isOpen, initialCategory]);
 
   if (!isOpen) return null;
 
+  const handleReset = () => {
+    // Reset dei filtri nello stato globale della Home
+    onFilterChange({
+      head_style: "",
+      shank_style: [],
+      primary_shape: "",
+      primary_stone_length: 0,
+      primary_stone_width: 0,
+      min_weight: 0,
+      max_weight: 50,
+      min_ct: 0,
+      max_ct: 10
+    }); 
+    setSelectedCategory(null);
+  };
+
   return (
-    <div className="fixed inset-0 z-[100] flex justify-end">
-      <div className="absolute inset-0 bg-black/85 backdrop-blur-md animate-in fade-in duration-500" onClick={onClose} />
+    <div className="fixed inset-0 z-[200] flex justify-end">
+      {/* Overlay con blur */}
+      <div 
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300" 
+        onClick={onClose} 
+      />
+      
+      {/* Pannello Drawer */}
       <div className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-500">
+        
+        {/* Header del Drawer - Dark Luxury Style */}
         <div className="p-6 border-b flex justify-between items-center bg-[#0a0a0a] text-white">
           {selectedCategory ? (
-            <button onClick={() => setSelectedCategory(null)} className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-black text-[#d4af37]">
-              <ChevronLeft size={16} /> Back to Selection
+            <button 
+              onClick={() => setSelectedCategory(null)} 
+              className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-black text-[#d4af37] hover:opacity-80 transition-all"
+            >
+              <ChevronLeft size={16} /> Back to Categories
             </button>
           ) : (
-            <span className="text-[10px] uppercase tracking-[0.3em] font-black text-[#d4af37]">Technical Filters</span>
+            <span className="text-[10px] uppercase tracking-[0.3em] font-black text-[#d4af37]">
+              Technical Filters
+            </span>
           )}
-          <button onClick={onClose} className="hover:rotate-90 transition-all"><X size={22} /></button>
+          
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={handleReset}
+              className="p-2 hover:bg-white/10 rounded-full transition-colors group"
+              title="Reset Filters"
+            >
+              <RotateCcw size={18} className="text-gray-400 group-hover:text-white" />
+            </button>
+            <button 
+              onClick={onClose} 
+              className="hover:rotate-90 transition-transform duration-300 p-1"
+            >
+              <X size={22} />
+            </button>
+          </div>
         </div>
-        <div className="flex-1 overflow-y-auto p-8">
+
+        {/* Corpo del Drawer */}
+        <div className="flex-1 overflow-y-auto p-8 text-black">
           {!selectedCategory ? (
-            <div className="space-y-6">
+            /* SELEZIONE CATEGORIA (Step 1) */
+            <div className="space-y-4">
+              <div className="mb-8">
+                <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-bold italic">
+                  Step 1: Select Category
+                </p>
+                <div className="h-[1px] w-8 bg-[#d4af37] mt-2"></div>
+              </div>
+              
               {['Rings', 'Bracelets', 'Earrings', 'Pendants'].map((cat) => (
-                <button key={cat} onClick={() => setSelectedCategory(cat.toLowerCase())} className="w-full text-left py-6 border-b border-gray-100 flex justify-between items-center group hover:bg-gray-50 px-2 transition-all">
-                  <span className="text-xl uppercase tracking-widest font-light group-hover:font-bold transition-all">{cat}</span>
-                  <ChevronRight size={18} className="text-[#d4af37]" />
+                <button 
+                  key={cat} 
+                  onClick={() => setSelectedCategory(cat.toLowerCase())} 
+                  className="w-full text-left py-6 border-b border-gray-100 flex justify-between items-center group hover:pl-2 transition-all"
+                >
+                  <span className="text-xl uppercase tracking-widest font-light group-hover:font-medium transition-all group-hover:text-[#d4af37]">
+                    {cat}
+                  </span>
+                  <ChevronRight size={18} className="text-[#d4af37] opacity-0 group-hover:opacity-100 transition-all" />
                 </button>
               ))}
             </div>
           ) : (
-            <div className="animate-in fade-in duration-500">
-              {selectedCategory === 'rings' && <RingsFilter onFilterChange={() => {}} />}
-              {selectedCategory === 'bracelets' && <BraceletsFilter onFilterChange={() => {}} />}
-              {selectedCategory === 'earrings' && <EarringsFilter onFilterChange={() => {}} />}
-              {selectedCategory === 'pendants' && <PendantsFilter onFilterChange={() => {}} />}
-              <button className="w-full bg-black text-white p-6 mt-12 text-[11px] font-black uppercase tracking-[0.3em] hover:bg-[#d4af37] hover:text-black transition-all">
-                Execute Research
+            /* FILTRI TECNICI SPECIFICI (Step 2) */
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="flex items-center justify-between mb-8 border-b border-gray-100 pb-2">
+                <h4 className="text-[10px] uppercase tracking-[0.3em] font-black text-[#d4af37]">
+                  {selectedCategory} Configuration
+                </h4>
+              </div>
+              
+              <div className="min-h-[300px]">
+                {/* Switcher dei filtri per categoria */}
+                {selectedCategory === 'rings' && (
+                  <RingsFilter onFilterChange={onFilterChange} />
+                )}
+                {selectedCategory === 'bracelets' && (
+                  <BraceletsFilter onFilterChange={onFilterChange} />
+                )}
+                {selectedCategory === 'earrings' && (
+                  <EarringsFilter onFilterChange={onFilterChange} />
+                )}
+                {selectedCategory === 'pendants' && (
+                  <PendantsFilter onFilterChange={onFilterChange} />
+                )}
+              </div>
+
+              {/* Tasto di Chiusura e Conferma */}
+              <button 
+                onClick={onClose}
+                className="w-full bg-[#1a1a1a] text-white p-6 mt-12 text-[11px] font-black uppercase tracking-[0.3em] hover:bg-[#d4af37] hover:text-black transition-all shadow-xl active:scale-[0.98]"
+              >
+                Apply Technical Specs
               </button>
+              
+              <p className="text-center mt-6 text-[9px] uppercase tracking-widest text-gray-400 font-bold">
+                *The catalog updates in background
+              </p>
             </div>
           )}
         </div>

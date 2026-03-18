@@ -1,79 +1,73 @@
-"use client";
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Search, ChevronRight } from 'lucide-react';
+'use client';
+import React from 'react';
+import { Search, SlidersHorizontal } from 'lucide-react';
 
-interface HomeFilterProps {
-  initialSearchTerm?: string;
+export interface FilterTab {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
 }
 
-export const HomeFilter = ({ initialSearchTerm = "" }: HomeFilterProps) => {
-  const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
-  const [category, setCategory] = useState("Anelli"); // Default to "Anelli" which maps to /rings
+interface HomeFilterProps {
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
+  onOpenAdvanced: () => void;
+  activeTab: string | null;
+  onTabChange: (id: string | null) => void;
+  tabs: FilterTab[]; 
+  onReset?: () => void; // Aggiunto per coerenza
+}
 
-  const handleExplore = () => {
-    let path = "/";
-    switch (category) {
-      case "Anelli":
-        path = "/rings";
-        break;
-      case "Orecchini":
-        // Coming soon
-        break;
-      case "Pendenti":
-        // Coming soon
-        break;
-    }
-
-    const query = new URLSearchParams();
-    if (searchTerm) {
-      query.set("search", searchTerm);
-    }
-    
-    // Only redirect if the category is "Anelli"
-    if (path === "/rings") {
-        router.push(`${path}?${query.toString()}`);
-    } else {
-        alert("Questa categoria non è ancora disponibile.");
-    }
-  };
-
+export const HomeFilter = ({ 
+  searchTerm, 
+  onSearchChange, 
+  onOpenAdvanced, 
+  activeTab, 
+  onTabChange, 
+  tabs = [] 
+}: HomeFilterProps) => {
   return (
-    <div className="flex flex-col gap-6">
-        {/* Search Input */}
-        <div className="flex-1 flex items-center border border-gray-200 p-4">
-          <Search size={18} className="text-[#d4af37] mr-4" />
+    // Aggiungiamo bg-white solido qui per sicurezza se il componente diventa sticky
+    <div className="w-full space-y-3 bg-white"> 
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        {tabs.map((tab) => (
+          <button 
+            key={tab.id} 
+            onClick={() => onTabChange(activeTab === tab.id ? null : tab.id)} 
+            className={`flex items-center justify-center py-2.5 gap-2 border rounded-sm transition-all duration-300 ${
+              activeTab === tab.id 
+                ? 'bg-[#fdfaf0] text-[#d4af37] border-[#d4af37]' 
+                : 'bg-white text-gray-400 border-gray-100 hover:text-black hover:border-gray-200'
+            }`}
+          >
+            <span className={activeTab === tab.id ? 'text-[#d4af37]' : 'opacity-60'}>
+              {tab.icon}
+            </span>
+            <span className="text-[8px] font-black uppercase tracking-widest">{tab.label}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="flex gap-2 h-10">
+        <div className="relative flex-grow group">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#d4af37] transition-colors" size={14} />
           <input 
             type="text" 
-            placeholder="Cerca per modello o ID..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full outline-none text-sm uppercase tracking-widest font-light"
+            value={searchTerm} 
+            placeholder="Search ID/Name..." 
+            // bg-white forzato per evitare trasparenze ereditate
+            className="w-full h-full pl-9 pr-4 bg-white border border-gray-100 text-[9px] uppercase tracking-widest outline-none focus:border-[#d4af37] transition-all" 
+            onChange={(e) => onSearchChange(e.target.value)} 
           />
         </div>
-
-        {/* Category Select */}
-        <div className="flex-1 p-4 flex items-center justify-between border border-gray-200">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Scegli Categoria</span>
-          <select 
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="outline-none text-xs font-bold uppercase bg-transparent"
-          >
-            <option>Anelli</option>
-            <option>Orecchini</option>
-            <option>Pendenti</option>
-          </select>
-        </div>
-
-        {/* Explore Button */}
         <button 
-          onClick={handleExplore}
-          className="bg-[#1a1a1a] text-white px-10 py-5 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[#d4af37] transition-colors flex items-center justify-center gap-2"
+          onClick={onOpenAdvanced} 
+          className="flex-none flex items-center gap-2 px-5 bg-[#111] text-white text-[9px] font-black uppercase tracking-widest hover:bg-[#d4af37] hover:text-black transition-all active:scale-95"
         >
-          Esplora <ChevronRight size={14} />
+          <SlidersHorizontal size={14} /> 
+          <span className="hidden sm:inline">Advanced Specs</span>
         </button>
+      </div>
     </div>
   );
 };
